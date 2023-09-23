@@ -79,26 +79,26 @@ function submitClicked() {
 }
 
 function addToPromotion(readableStreamForFile, options) {
-    pinata.pinFileToIPFS(readableStreamForFile, options).then((result) => {
-      // Add hash in a corresponding promotion
-      // This code searches allPromotions for the first promotion object whose `name` matches the name of the promotion just uploaded in `options`.
-      var matchingPromotion = allPromotions.find(promotion => promotion.name === options.pinataMetadata.keyvalues.promotionName);
-      // if there is such a promotion, great; we add it.
-      if (matchingPromotion) {
-        matchingPromotion.addNewHash(result["IpfsHash"]);
-      }
-      // if not, then okay we create a new promotion and add it.
-      else {
-        let newPromotion = new promotion(options.pinataMetadata.keyvalues.promotionName);
-        newPromotion.addNewHash(result["IpfsHash"]);
-        allPromotions.push(newPromotion);
-      }
-      // Add tier to tiers[]
-      matchingPromotion.addNewTier(parseInt(options.pinataMetadata.keyvalues.tier));
-    }).catch((err) => {
-      console.log(err);    // handle error here
-    });
-  }
+  pinata.pinFileToIPFS(readableStreamForFile, options).then((result) => {
+    // Add hash in a corresponding promotion
+    // This code searches allPromotions for the first promotion object whose `name` matches the name of the promotion just uploaded in `options`.
+    var matchingPromotion = allPromotions.find(promotion => promotion.name === options.pinataMetadata.keyvalues.promotionName);
+    // if there is such a promotion, great; we add it.
+    if (matchingPromotion) {
+      matchingPromotion.addNewHash(result["IpfsHash"]);
+    }
+    // if not, then okay we create a new promotion and add it.
+    else {
+      let newPromotion = new promotion(options.pinataMetadata.keyvalues.promotionName);
+      newPromotion.addNewHash(result["IpfsHash"]);
+      allPromotions.push(newPromotion);
+    }
+    // Add tier to tiers[]
+    matchingPromotion.addNewTier(parseInt(options.pinataMetadata.keyvalues.tier));
+  }).catch((err) => {
+    console.log(err);    // handle error here
+  });
+}
 
 // @TODO we need to use Scaffold2 to call a function to pass the array as the IPFS hashes for a NewPromotion.
 // We call this function with a button. It is based on the promotionName text input on the website.
