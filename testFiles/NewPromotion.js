@@ -6,6 +6,7 @@ const pinataSDK = require('@pinata/sdk');
 const pinata = new pinataSDK(PINATA_API_KEY, PINATA_SECRET_KEY);
 
 const fs = require('fs');
+const ethers = require('ethers');
 
 // This creates a promotion class which we'll use to store user uploads for creation of a new promotion.
 
@@ -13,24 +14,23 @@ class promotion {
     constructor(_name) {
       this.name = _name;
       this.hashes = [];
+      this.tiers = [];
     }
     
-    addNewHash(_newHash)
-    {
-        this.hashes.push(_newHash);
+    addNewHash(_newHash) {
+      this.hashes.push(_newHash);
     }
 
-    getHashes()
-    {
-        return this.hashes;
+    addNewTier(_newTier) {
+      this.tiers.push(_newTier);
     }
 
-    addToPromotion(readableStreamForFile, options) {
-        pinata.pinFileToIPFS(readableStreamForFile, options).then((result) => {
-            return result["IpfsHash"];
-        }).catch((err) => {
-            //@TODO handle error here
-        });
+    getHashes() {
+      return this.hashes;
+    }
+
+    getTiers() {
+      return this.tiers;
     }
   }
 
@@ -61,7 +61,7 @@ function submitClicked() {
 // Following lines build the `options` parameter from form intakes.
     var fileName = document.getElementById('fileName').value;  // Text field ID: fileName
     var promotionName = document.getElementById('promotionName').value;  // Text field ID: promotion
-    var tier = document.getElementById('tier').value;  // Text field ID: tier
+    var tier = document.getElementById('tier').value;  // $$ amount needed to be spent to receive this NFT. Text field ID: tier
    
     const options = {
         pinataMetadata: {
@@ -93,6 +93,8 @@ function addToPromotion(readableStreamForFile, options) {
         newPromotion.addNewHash(result["IpfsHash"]);
         allPromotions.push(newPromotion);
       }
+      // Add tier to tiers[]
+      matchingPromotion.addNewTier(parseInt(options.pinataMetadata.keyvalues.tier));
     }).catch((err) => {
       console.log(err);    // handle error here
     });
@@ -101,21 +103,32 @@ function addToPromotion(readableStreamForFile, options) {
 // @TODO we need to use Scaffold2 to call a function to pass the array as the IPFS hashes for a NewPromotion.
 // We call this function with a button. It is based on the promotionName text input on the website.
 function writePromotionToChain() {
-    var promotionName = document.getElementById('promotionName').value;  // Text field ID: promotion
-    var matchingPromotion = allPromotions.find(promotion => promotion.name === promotionName);
+  var promotionName = document.getElementById('promotionName').value;  // Text field ID: promotion
+  var matchingPromotion = allPromotions.find(promotion => promotion.name === promotionName);
 
-    const { writeAsync, isLoading, isMining } = useScaffoldContractWrite({
-        // From Zach: I'm not sure if contractName includes .sol or not.
-        contractName: "Wander.sol",
-        // From Zach: We need to check with Henrik & Satya what the functionName will be.
-        functionName: "CHANGETHIS",
-        // this should be an array of strings with the IPFS hashes
-        args: matchingPromotion.hashes,
-        // The number of block confirmations to wait for before considering transaction to be confirmed (default : 1).
-        blockConfirmations: 1,
-        // The callback function to execute when the transaction is confirmed.
-        onBlockConfirmation: (txnReceipt) => {
-          console.log("Transaction blockHash", txnReceipt.blockHash);
-        },
-      });
+  var duration = document.getElementById('duration'); // duration of promotion in days.
+  var donationAmount = document.getElementById('donationAmount'); // percent as a decimal, i.e. 0.5% is 0.0005.
+
+  if (ethers.utils.isAddress(document.getElementById('donationAddress'))) {
+    var donationAddress = document.getElementById('donationAddress'); // Fetch input from text field
+  } else {
+    console.log('Input for donationAddress is not a valid Ethereum address.');
+    return;
+  }
+
+  // NOTE FROM ZACH: This should be ready to go in scaffold.
+  const { writeAsync, isLoading, isMining } = useScaffoldContractWrite({
+    // From Zach: I'm not sure if contractName includes .sol or not.
+    contractName: "Wander.sol",
+    // From Zach: We need to check with Henrik & Satya what the functionName will be.
+    functionName: "createPromotion",
+    // this should be an array of strings with the IPFS hashes
+    args: [matchingPromotion.hashes, matchingPromotion.tiers, duration, donationAddress, donationAmount],
+    // The number of block confirmations to wait for before considering transaction to be confirmed (default : 1).
+    blockConfirmations: 1,
+    // The callback function to execute when the transaction is confirmed.
+    onBlockConfirmation: (txnReceipt) => {
+      console.log("Transaction blockHash", txnReceipt.blockHash);
+    },
+  });
 }
