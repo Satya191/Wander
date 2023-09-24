@@ -19,6 +19,10 @@ export const ContractInteraction = () => {
     },
   });
 
+  if (isLoading) return (
+    <p>loading...</p>
+  )
+
   return (
     <div className="flex bg-base-300 relative pb-10">
       <DiamondIcon className="absolute top-24" />
