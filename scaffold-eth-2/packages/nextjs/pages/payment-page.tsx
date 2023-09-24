@@ -9,6 +9,29 @@ import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import React, { useState, FormEvent } from 'react'; // Import FormEvent
 
 const paymentPage: NextPage = () => {
+  // field values for setDonationAddress
+  const [setDonationAddress, setSetDonationAddress] = useState('');
+
+   // scaffoldWrite for setDonationAddress
+   const { writeAsync : asyncSetDonationAddress } = useScaffoldContractWrite({
+    contractName: "Wander",
+    functionName: "setDonationAddress",
+    args: [setDonationAddress],
+    blockConfirmations: 1,
+    onBlockConfirmation: (txnReceipt) => {
+      console.log("Transaction block hash ", txnReceipt.blockHash);
+    },
+  });
+
+  // handleSubmit for setDonationAddress
+  const handleSubmitSetDonationAddress = async (e: FormEvent) => {
+    e.preventDefault(); // Prevent page refresh
+
+    await asyncSetDonationAddress();
+
+    setSetDonationAddress('');
+  };
+
   // field values for sendEther
   const [sendEtherField1, setSendEtherField1] = useState('');
   const [sendEtherField2, setSendEtherField2] = useState('');
@@ -36,6 +59,23 @@ const paymentPage: NextPage = () => {
   };
 
   return (
+  <>
+    // Form for setDonationAddress
+    <form className="flex flex-col items-center justify-center gap-3" onSubmit={handleSubmitSetDonationAddress}>
+      <div>
+        <label className="text-center font-bold">Donation Address</label>
+        <input
+          className="input input-bordered w-full max-w-xs mb-7"
+          type="text"
+          value={setDonationAddress}
+          onChange={(e) => setSetDonationAddress(e.target.value)}
+        />
+      </div>
+      <button className="bg-primary btn btn-primary mt-5 mb-0" type="submit">
+        Set Donation Address.
+      </button>
+    </form>
+
     // Form for sendEther
     <form className="flex flex-col items-center justify-center gap-3" onSubmit={handleSubmitSendEther}>
       <div>
@@ -60,6 +100,7 @@ const paymentPage: NextPage = () => {
         Make Payment
       </button>
     </form>
+  </>
   );
 };
 
