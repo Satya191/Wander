@@ -132,11 +132,12 @@ function writePromotionToChain() {
   });
 }
 
-function makePayment(_vendorAddress) {
+function makePayment(string _vendorAddress, _ethAmt) {
   const { writeAsync, isLoading, isMining } = useScaffoldContractWrite({
     contractName:"Wander.sol",
     functionName:"sendEther",
     args: [_vendorAddress],
+    value: _ethAmt, // This is IN ETH (i.e. in wei * 1e18).
     blockConfirmations:1,
     onBlockConfirmation: (txnReceipt) => {
       console.log("Transaction block hash ", txnReceipt.blockHash);
