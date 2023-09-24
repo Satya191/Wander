@@ -6,6 +6,7 @@ import type { NextPage } from "next";
 // import { Address } from '~~/components/scaffold-eth';
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import React, { useState } from 'react';
+import { ethers } from 'ethers';
 
 // We first define the React component's props shape.
 interface MyFormProps {
@@ -16,13 +17,15 @@ const MyForm: React.FC<MyFormProps> = ({ customButtonText }) => {
   const [field1, setField1] = useState('');
   const [field2, setField2] = useState('');
 
+  // const field2AsWeiString = ethers.parseEther(field2);
+
   // Here we call the Hook and set its values directly within `MyForm` component.
   const { writeAsync, isLoading, isMining } = useScaffoldContractWrite({
   // @TODO
   contractName:"Wander",
   functionName:"sendEther",
   args: [field1],
-  value: field2, // This is IN ETH.
+  value: field2 as `${number}`, // This is IN ETH.
   blockConfirmations:1,
   onBlockConfirmation: (txnReceipt) => {
     console.log("Transaction block hash ", txnReceipt.blockHash);
