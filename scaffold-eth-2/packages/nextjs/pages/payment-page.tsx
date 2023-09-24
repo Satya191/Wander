@@ -4,67 +4,66 @@ import type { NextPage } from "next";
 // import { MetaHeader } from "~~/components/MetaHeader";
 // import { useAccount } from "wagmi";
 // import { Address } from '~~/components/scaffold-eth';
+import { ethers } from 'ethers';
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react'; // Import FormEvent
 
-// We first define the React component's props shape.
-interface MyFormProps {
-  customButtonText: string;
-}
+// ...
 
-const MyForm: React.FC<MyFormProps> = ({ customButtonText }) => {
+const paymentPage: NextPage = () => {
   const [field1, setField1] = useState('');
   const [field2, setField2] = useState('');
 
-  // Here we call the Hook and set its values directly within `MyForm` component.
-  const { writeAsync, isLoading, isMining } = useScaffoldContractWrite({
-  // @TODO
-  contractName:"Wander",
-  functionName:"sendEther",
-  args: [field1],
-  value: field2 as `${number}`, // This is IN ETH.
-  blockConfirmations:1,
-  onBlockConfirmation: (txnReceipt) => {
-    console.log("Transaction block hash ", txnReceipt.blockHash);
-  },
-});
+  const { writeAsync, isLoading } = useScaffoldContractWrite({
+    contractName: "Wander",
+    functionName: "sendEther",
+    args: [field1],
+    value: ethers.formatEther(1),
+    blockConfirmations: 1,
+    onBlockConfirmation: (txnReceipt) => {
+      console.log("Transaction block hash ", txnReceipt.blockHash);
+    },
+  });
 
-  // React automatically calls onSubmit whenever the form is submitted.
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!isLoading && !isMining) {
-      writeAsync();  // Call the asynchronous write function provided by `useScaffoldContractWrite`.
-    }
+  // Define a submit handler function
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault(); // Prevent page refresh
+
+    // Your form submission logic here
+    // For example, call writeAsync
+    await writeAsync();
+
+    // Clear the form fields after submission if needed
+    setField1('');
+    setField2('');
   };
 
   return (
-      <form className="flex flex-col items-center justify-center gap-3" >
-          <div>
-              <label className="text-center font-bold">Vendor Address</label>
-              <input className="input input-bordered w-full max-w-xs mb-7" type="text" value={field1} onChange={(e) => setField1(e.target.value)} />
-          </div>
-          <div>
-              <label className="text-center font-bold">Amount (in ETH)</label>
-              <input className="input input-bordered w-full max-w-xs mb-7" type="text" value={field2} onChange={(e) => setField2(e.target.value)} />
-          </div>
-          <button className="bg-primary btn btn-primary mt-5 mb-0" type="submit">{customButtonText}</button>
-      </form>
+    <form className="flex flex-col items-center justify-center gap-3" onSubmit={handleSubmit}>
+      <div>
+        <label className="text-center font-bold">Vendor Address</label>
+        <input
+          className="input input-bordered w-full max-w-xs mb-7"
+          type="text"
+          value={field1}
+          onChange={(e) => setField1(e.target.value)}
+        />
+      </div>
+      <div>
+        <label className="text-center font-bold">Amount (in ETH)</label>
+        <input
+          className="input input-bordered w-full max-w-xs mb-7"
+          type="number"
+          value={field2}
+          onChange={(e) => setField2(e.target.value)}
+        />
+      </div>
+      <button className="bg-primary btn btn-primary mt-5 mb-0" type="submit">
+        Make Payment
+      </button>
+    </form>
   );
 };
 
-// Define your parent component here and call/instantiate MyForm.
-const ParentComponent: NextPage = () => {
 
-  const customSubmitFunction = (field1: string, field2: string) => {
-    // Here you can handle submitted values from the form's fields.
-    console.log(field1, field2);
-  };
-
-  return (
-    <div>
-      <MyForm customButtonText = "Make Payment!"/>
-    </div>
-  )
-};
-
-export default ParentComponent;
+export default paymentPage;
