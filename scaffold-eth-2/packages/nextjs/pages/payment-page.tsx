@@ -1,9 +1,4 @@
-// import Link from "next/link";
 import type { NextPage } from "next";
-// import { BugAntIcon, MagnifyingGlassIcon, SparklesIcon } from "@heroicons/react/24/outline";
-// import { MetaHeader } from "~~/components/MetaHeader";
-// import { useAccount } from "wagmi";
-// import { Address } from '~~/components/scaffold-eth';
 import { ethers } from 'ethers';
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import React, { useState, FormEvent } from 'react'; // Import FormEvent
@@ -30,6 +25,29 @@ const paymentPage: NextPage = () => {
     await asyncSetDonationAddress();
 
     setSetDonationAddress('');
+  };
+
+  // field values for setDonationAmount
+  const [setDonationAmount, setSetDonationAmount] = useState('');
+
+   // scaffoldWrite for setDonationAmount
+   const { writeAsync : asyncSetDonationAmount } = useScaffoldContractWrite({
+    contractName: "Wander",
+    functionName: "setDonationAmount",
+    args: [setDonationAmount],
+    blockConfirmations: 1,
+    onBlockConfirmation: (txnReceipt) => {
+      console.log("Transaction block hash ", txnReceipt.blockHash);
+    },
+  });
+
+  // handleSubmit for setDonationAmount
+  const handleSubmitSetDonationAmount = async (e: FormEvent) => {
+    e.preventDefault(); // Prevent page refresh
+
+    await asyncSetDonationAmount();
+
+    setSetDonationAmount('');
   };
 
   // field values for sendEther
@@ -60,6 +78,22 @@ const paymentPage: NextPage = () => {
 
   return (
   <>
+    // Form for setDonationAmount
+    <form className="flex flex-col items-center justify-center gap-3" onSubmit={handleSubmitSetDonationAmount}>
+      <div>
+        <label className="text-center font-bold">Donation Amount (in wei)</label>
+        <input
+          className="input input-bordered w-full max-w-xs mb-7"
+          type="text"
+          value={setDonationAmount}
+          onChange={(e) => setSetDonationAmount(e.target.value)}
+        />
+      </div>
+      <button className="bg-primary btn btn-primary mt-5 mb-0" type="submit">
+        Set Donation Amount
+      </button>
+    </form>
+
     // Form for setDonationAddress
     <form className="flex flex-col items-center justify-center gap-3" onSubmit={handleSubmitSetDonationAddress}>
       <div>
@@ -88,7 +122,7 @@ const paymentPage: NextPage = () => {
         />
       </div>
       <div>
-        <label className="text-center font-bold">Amount (in ETH)</label>
+        <label className="text-center font-bold">Amount (in wei)</label>
         <input
           className="input input-bordered w-full max-w-xs mb-7"
           type="number"
