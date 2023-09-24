@@ -1,11 +1,11 @@
 const contracts = {
-  31337: [
+  421613: [
     {
-      chainId: "31337",
-      name: "localhost",
+      chainId: "421613",
+      name: "arbitrumGoerli",
       contracts: {
         Wander: {
-          address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+          address: "0x76acc15Fb47BF6e908a6Dc8100bA6a1Cf6292A87",
           abi: [
             {
               inputs: [],
