@@ -104,7 +104,7 @@ const paymentPage: NextPage = () => {
     contractName: "Wander",
     functionName: "sendEther",
     args: [sendEtherField1],
-    value: ethers.formatEther(1),
+    value: ethers.utils.formatEther(1),
     blockConfirmations: 1,
     onBlockConfirmation: (txnReceipt) => {
       console.log("Transaction block hash ", txnReceipt.blockHash);
