@@ -3,7 +3,8 @@ import type { NextPage } from "next";
 // import { BugAntIcon, MagnifyingGlassIcon, SparklesIcon } from "@heroicons/react/24/outline";
 // import { MetaHeader } from "~~/components/MetaHeader";
 // import { useAccount } from "wagmi";
-import { Address } from '~~/components/scaffold-eth';
+// import { Address } from '~~/components/scaffold-eth';
+import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import React, { useState } from 'react';
 
 // We first define the React component's props shape.
@@ -17,10 +18,10 @@ const MyForm: React.FC<MyFormProps> = ({ customButtonText }) => {
 
   // Here we call the Hook and set its values directly within `MyForm` component.
   const { writeAsync, isLoading, isMining } = useScaffoldContractWrite({
-  // FIX
-  contractName:"Wander.sol",
+  // @TODO
+  contractName:"Wander",
   functionName:"sendEther",
-  args: [field1],
+  args: [field1]
   value: field2, // This is IN ETH.
   blockConfirmations:1,
   onBlockConfirmation: (txnReceipt) => {
@@ -37,10 +38,7 @@ const MyForm: React.FC<MyFormProps> = ({ customButtonText }) => {
   };
 
   return (
-      <form className="flex flex-col items-center justify-center gap-3" onSubmit={(e) => {
-          e.preventDefault(); // Prevent default form submission
-          onSubmit(field1, field2);
-      }}>
+      <form className="flex flex-col items-center justify-center gap-3" >
           <div>
               <label className="text-center font-bold">Vendor Address</label>
               <input className="input input-bordered w-full max-w-xs mb-7" type="text" value={field1} onChange={(e) => setField1(e.target.value)} />
