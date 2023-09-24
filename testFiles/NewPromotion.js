@@ -104,10 +104,9 @@ function addToPromotion(readableStreamForFile, options) {
 // We call this function with a button. It is based on the promotionName text input on the website.
 function writePromotionToChain() {
   var promotionName = document.getElementById('promotionName').value;  // Text field ID: promotion
-  var matchingPromotion = allPromotions.find(promotion => promotion.name === promotionName);
-
+    var matchingPromotion = allPromotions.find(promotion => promotion.name === promotionName);
   var duration = document.getElementById('duration'); // duration of promotion in days.
-  var donationAmount = document.getElementById('donationAmount'); // percent as a decimal, i.e. 0.5% is 0.0005.
+  var donationAmount = document.getElementById('donationAmount'); // percent as a decimal, i.e. 0.5% is 0.005.
 
   if (ethers.utils.isAddress(document.getElementById('donationAddress'))) {
     var donationAddress = document.getElementById('donationAddress'); // Fetch input from text field
