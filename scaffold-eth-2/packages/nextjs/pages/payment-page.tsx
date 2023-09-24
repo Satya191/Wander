@@ -11,13 +11,14 @@ import React, { useState, FormEvent } from 'react'; // Import FormEvent
 // ...
 
 const paymentPage: NextPage = () => {
-  const [field1, setField1] = useState('');
-  const [field2, setField2] = useState('');
+  // constants for sendEther
+  const [sendEtherField1, setSendEtherField1] = useState('');
+  const [sendEtherField2, setSendEtherField2] = useState('');
 
-  const { writeAsync, isLoading } = useScaffoldContractWrite({
+  const { writeAsync : asyncSendEther } = useScaffoldContractWrite({
     contractName: "Wander",
     functionName: "sendEther",
-    args: [field1],
+    args: [sendEtherField1],
     value: ethers.formatEther(1),
     blockConfirmations: 1,
     onBlockConfirmation: (txnReceipt) => {
@@ -31,11 +32,11 @@ const paymentPage: NextPage = () => {
 
     // Your form submission logic here
     // For example, call writeAsync
-    await writeAsync();
+    await asyncSendEther();
 
     // Clear the form fields after submission if needed
-    setField1('');
-    setField2('');
+    setSendEtherField1('');
+    setSendEtherField2('');
   };
 
   return (
@@ -45,8 +46,8 @@ const paymentPage: NextPage = () => {
         <input
           className="input input-bordered w-full max-w-xs mb-7"
           type="text"
-          value={field1}
-          onChange={(e) => setField1(e.target.value)}
+          value={sendEtherField1}
+          onChange={(e) => setSendEtherField1(e.target.value)}
         />
       </div>
       <div>
@@ -54,8 +55,8 @@ const paymentPage: NextPage = () => {
         <input
           className="input input-bordered w-full max-w-xs mb-7"
           type="number"
-          value={field2}
-          onChange={(e) => setField2(e.target.value)}
+          value={sendEtherField2}
+          onChange={(e) => setSendEtherField2(e.target.value)}
         />
       </div>
       <button className="bg-primary btn btn-primary mt-5 mb-0" type="submit">
@@ -64,6 +65,5 @@ const paymentPage: NextPage = () => {
     </form>
   );
 };
-
 
 export default paymentPage;
