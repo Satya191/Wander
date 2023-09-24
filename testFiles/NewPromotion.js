@@ -132,3 +132,15 @@ function writePromotionToChain() {
     },
   });
 }
+
+function makePayment(_vendorAddress) {
+  const { writeAsync, isLoading, isMining } = useScaffoldContractWrite({
+    contractName:"Wander.sol",
+    functionName:"sendEther",
+    args: [_vendorAddress],
+    blockConfirmations:1,
+    onBlockConfirmation: (txnReceipt) => {
+      console.log("Transaction block hash ", txnReceipt.blockHash);
+    }
+  });
+}
