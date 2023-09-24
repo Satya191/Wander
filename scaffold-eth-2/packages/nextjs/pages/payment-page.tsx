@@ -72,6 +72,29 @@ const paymentPage: NextPage = () => {
     setSetDonationAddress('');
   };
 
+  // field values for setDonationAmount
+  const [setDonationAmount, setSetDonationAmount] = useState('');
+
+  // scaffoldWrite for setDonationAmount
+  const { writeAsync : asyncSetDonationAmount } = useScaffoldContractWrite({
+    contractName: "Wander",
+    functionName: "setDonationAmount",
+    args: [setDonationAmount],
+    blockConfirmations: 1,
+    onBlockConfirmation: (txnReceipt) => {
+      console.log("Transaction block hash ", txnReceipt.blockHash);
+    },
+  });
+
+  // handleSubmit for setDonationAmount
+  const handleSubmitSetDonationAmount = async (e: FormEvent) => {
+    e.preventDefault(); // Prevent page refresh
+
+    await asyncSetDonationAmount();
+
+    setSetDonationAmount('');
+  };
+
   // field values for sendEther
   const [sendEtherField1, setSendEtherField1] = useState('');
   const [sendEtherField2, setSendEtherField2] = useState('');
@@ -100,6 +123,22 @@ const paymentPage: NextPage = () => {
 
   return (
   <>
+    // Form for setDonationAmount
+    <form className="flex flex-col items-center justify-center gap-3" onSubmit={handleSubmitSetDonationAmount}>
+      <div>
+        <label className="text-center font-bold">Donation Amount (in wei)</label>
+        <input
+          className="input input-bordered w-full max-w-xs mb-7"
+          type="text"
+          value={setDonationAmount}
+          onChange={(e) => setSetDonationAmount(e.target.value)}
+        />
+      </div>
+      <button className="bg-primary btn btn-primary mt-5 mb-0" type="submit">
+        Set Donation Amount
+      </button>
+    </form>
+    
     // Form for createPromotion
     <form className="flex flex-col items-center justify-center gap-3" onSubmit={handleSubmitCreatePromotion}>
       {/* Input field for tiers */}
