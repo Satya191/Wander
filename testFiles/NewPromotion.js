@@ -9,7 +9,6 @@ const fs = require('fs');
 const ethers = require('ethers');
 
 // This creates a promotion class which we'll use to store user uploads for creation of a new promotion.
-
 class promotion {
     constructor(_name) {
       this.name = _name;
