@@ -22,10 +22,10 @@ const paymentPage: NextPage = () => {
     functionName: "createPromotion",
     args: [
       tiers, // Pass tiers as an array of strings
-      tierAmounts.map(value => ethers.parseUnits(value)), // Convert tierAmounts to wei
-      BigInt(promoDuration),
+      tierAmounts.map(value => BigInt(value)), // Convert tierAmounts to wei
+      promoDuration,
       promoDonationAddress,
-      BigInt(promoDonationAmount), // Convert donationAmount to wei (assuming 18 decimals)
+      promoDonationAmount, // Convert donationAmount to wei (assuming 18 decimals)
     ],
     blockConfirmations: 1,
     onBlockConfirmation: (txnReceipt) => {
@@ -115,7 +115,7 @@ const paymentPage: NextPage = () => {
 
       {/* Input field for tierAmounts */}
       <div>
-        <label className="text-center font-bold">Tier Amounts (Comma-separated values in ETH)</label>
+        <label className="text-center font-bold">Tier Amounts (Comma-separated values)</label>
         <input
           className="input input-bordered w-full max-w-xs mb-7"
           type="text"
