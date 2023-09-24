@@ -8,13 +8,12 @@ import { ethers } from 'ethers';
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import React, { useState, FormEvent } from 'react'; // Import FormEvent
 
-// ...
-
 const paymentPage: NextPage = () => {
-  // constants for sendEther
+  // field values for sendEther
   const [sendEtherField1, setSendEtherField1] = useState('');
   const [sendEtherField2, setSendEtherField2] = useState('');
 
+  // scaffoldWrite for sendEther
   const { writeAsync : asyncSendEther } = useScaffoldContractWrite({
     contractName: "Wander",
     functionName: "sendEther",
@@ -26,21 +25,19 @@ const paymentPage: NextPage = () => {
     },
   });
 
-  // Define a submit handler function
-  const handleSubmit = async (e: FormEvent) => {
+  // handleSubmit for sendEther
+  const handleSubmitSendEther = async (e: FormEvent) => {
     e.preventDefault(); // Prevent page refresh
 
-    // Your form submission logic here
-    // For example, call writeAsync
     await asyncSendEther();
 
-    // Clear the form fields after submission if needed
     setSendEtherField1('');
     setSendEtherField2('');
   };
 
   return (
-    <form className="flex flex-col items-center justify-center gap-3" onSubmit={handleSubmit}>
+    // Form for sendEther
+    <form className="flex flex-col items-center justify-center gap-3" onSubmit={handleSubmitSendEther}>
       <div>
         <label className="text-center font-bold">Vendor Address</label>
         <input
