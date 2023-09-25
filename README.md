@@ -9,23 +9,10 @@ A programmable payments POC that awards a dynamic NFT to a tourist visiting NYC 
 
 ## Table of Contents
 
-- [Project Overview](#project-overview)
 - [Background](#background) 
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-- [Usage](#usage)
-- [Scripts](#scripts)
-- [Development](#development)
-- [Contributing](#contributing)
-- [License](#license)
-
-## Project Overview
-
-This repository is organized as a monorepo with two main packages:
-
-- `hardhat`: Contains Ethereum smart contract development and testing using Hardhat.
-- `nextjs`: Contains the Next.js web application.
 
 ## Background 
 
@@ -79,18 +66,3 @@ Before you begin, ensure you have the following software installed on your syste
     ```bash
     yarn start
 Visit your app on: http://localhost:3000. You can interact with your smart contracts 
-
-### Scripts
-This project includes several predefined scripts to streamline common tasks. You can run these scripts using Yarn. For example:
-
-To start the development server for the Next.js application:
-
-```bash
-yarn start
-``````
-### Here is a list of available scripts:
-
-- account, chain, fork, deploy, verify, compile, generate, hardhat:lint, hardhat:lint-staged,hardhat:test, hardhat:test,start, next:lint, next:format,next:check-types, postinstall: Install Husky hooks, precommit: Run lint-staged.
-
-### License
-This project is licensed under the MIT License. See the LICENSE file for details.
